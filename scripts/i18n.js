@@ -2,6 +2,21 @@
 (() => {
   "use strict";
   const dict = {
+    "🌈 Artist Diversity":"🌈 Künstlervielfalt",
+    "How diverse your listening habits are":"So vielfältig ist dein Musikgeschmack",
+    "Artists Listened To":"Gehörte Künstler",
+    "Artists in Library":"Künstler in der Bibliothek",
+    "“How evenly your listening time is spread across the artists you actually play.”":"„So gleichmäßig verteilt sich deine Hörzeit auf die tatsächlich gehörten Künstler.“",
+    "⭐ Rating Habits":"⭐ Deine Bewertungen",
+    "How you rate your music":"So bewertest du deine Musik",
+    "Rated Songs":"Bewertete Titel",
+    "Unrated Songs":"Unbewertete Titel",
+    "Unrated":"Unbewertet",
+    "Quadrat · 1:1":"Quadrat · 1:1",
+    "Portrait · 4:5":"Hochformat · 4:5",
+    "Unknown Artist":"Unbekannter Künstler",
+    "Unknown Album":"Unbekanntes Album",
+    "Unknown Song":"Unbekannter Titel",
     "Language":"Sprache",
     "Install app":"App installieren",
     "Cancel generation":"Berechnung abbrechen",

@@ -627,6 +627,12 @@ class WrappedDisplay {
 
   // Helper methods
   getTimeMessage(days, hours) {
+    if (window.WrappedI18n?.language === "de") {
+      if (days > 365) return `Du hast <b>${days} Tage</b> Musik gehört – mehr als ein ganzes Jahr!`;
+      if (days > 30) return `Du hast <b>${days} Tage</b> und <b>${hours} Stunden</b> mit deiner Musik verbracht.`;
+      if (hours > 24) return `Du hast <b>${hours} Stunden</b> Musik gehört – fast ein eigenes Festival.`;
+      return `Jede Minute zählt: <b>${hours} Stunden</b> voller Musik.`;
+    }
     if (days > 365)
       return `You have stacked <b>${days} days</b> (over a full <b>year</b>) of pure audio – that's dedication on another level!`;
     if (days > 30)
@@ -638,6 +644,13 @@ class WrappedDisplay {
 
   getDiversityMessage(score) {
     const numScore = parseFloat(score) || 0;
+    if (window.WrappedI18n?.language === "de") {
+      const value = numScore.toFixed(2);
+      if (numScore >= 80) return `Dein Vielfaltswert beträgt <b>${value}%</b> – du entdeckst ständig neue Künstler.`;
+      if (numScore >= 60) return `Dein Vielfaltswert beträgt <b>${value}%</b> – deine Favoriten wechseln sich mit neuen Entdeckungen ab.`;
+      if (numScore >= 40) return `Dein Vielfaltswert beträgt <b>${value}%</b> – vertraute Musik mit gelegentlichen Ausflügen.`;
+      return `Dein Vielfaltswert beträgt <b>${value}%</b> – du bleibst deinen Lieblingskünstlern besonders treu.`;
+    }
 
     if (numScore >= 80)
       return `Your diversity score is <b>${numScore.toFixed(
@@ -661,6 +674,13 @@ class WrappedDisplay {
     const favPct = totalPlays
       ? +((favorites / totalPlays) * 100).toFixed(0)
       : 0;
+
+    if (window.WrappedI18n?.language === "de") {
+      if (ratedPct === 0 && favPct === 0) return "Du lässt die Musik für sich sprechen – bisher ohne Bewertungen und Favoriten.";
+      if (ratedPct > 70) return `Du bewertest viel Musik (<b>${ratedPct}%</b>) und markierst <b>${favPct}%</b> als Favoriten – du weißt, was dir gefällt.`;
+      if (favPct > 20) return `Du hast viele Favoriten (<b>${favPct}%</b>) und bewertest <b>${ratedPct}%</b> – deine Lieblingsmusik ist dir wichtig.`;
+      return `Du bewertest <b>${ratedPct}%</b> und favorisierst <b>${favPct}%</b> deiner Wiedergaben – Musikgenuss nach deinem Geschmack.`;
+    }
 
     if (ratedPct > 80 && favPct <= 10)
       return `Rated <b>${ratedPct}% of plays</b>, favourited <b>${favPct}% of plays</b> – precise and selective. Few songs earn your seal.`;
@@ -707,6 +727,12 @@ class WrappedDisplay {
 
   getEraMessage(decadeRange) {
     const decades = decadeRange.map(([d]) => parseInt(d)).filter(Boolean);
+    if (window.WrappedI18n?.language === "de") {
+      if (!decades.length) return "Dein Musikgeschmack ist zeitlos.";
+      const min = Math.min(...decades), max = Math.max(...decades);
+      if (max - min > 50) return `Deine Musik reicht von den <b>${min}ern</b> bis zu den <b>${max}ern</b> – eine spannende Zeitreise.`;
+      return `Deine Sammlung verbindet verschiedene Musikjahrzehnte von den <b>${min}ern</b> bis zu den <b>${max}ern</b>.`;
+    }
     if (decades.length === 0)
       return `Your musical era preferences show a timeless taste.`;
 
@@ -731,6 +757,13 @@ class WrappedDisplay {
   }
 
   getAudiophileMessage(qs, qsPlays, pctLoss, pctHR, avgKbps) {
+    if (window.WrappedI18n?.language === "de") {
+      if (pctHR >= 50 && qs >= 95) return "🚀 <b>Hi-Res-Profi.</b> Deine Sammlung setzt auf besonders hochauflösende Musik.";
+      if (pctLoss >= 95) return "🧙‍♂️ <b>Lossless-Fan.</b> Du setzt vor allem auf verlustfreie Audioqualität.";
+      if (qs >= 90) return "<b>Höchste Klangqualität.</b> Du hörst besonders gern hochwertige Musikdateien.";
+      if (qs >= 55) return "<b>Qualitätsbewusst.</b> Dir ist guter Klang wichtig.";
+      return "📱 <b>Musik ist das Wichtigste.</b> Du hörst, was dir gefällt – unabhängig vom Dateiformat.";
+    }
     if (pctHR >= 50 && qs >= 95)
       return `🚀 <b>Hi-Res Overlord.</b> Half your library is 24-bit / 96 kHz+ and you actually play it—your DAC is probably warmer than your house.`;
 
