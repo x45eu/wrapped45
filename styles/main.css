@@ -1,3 +1,13 @@
+/* Self-hosted JetBrains Mono, SIL Open Font License 1.1.
+   Original license: assets/fonts/JetBrainsMono-OFL.txt */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../assets/fonts/JetBrainsMono-Variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+}
+
 /* Locally hosted Open Source font: SIL OFL 1.1 (see assets/fonts/OFL.txt). */
 @font-face {
   font-family: "Atkinson Hyperlegible";
@@ -855,3 +865,16 @@ a:hover { color: #c1ddff; }
 .wrapped-view { color: #eef2f6; }
 .wrapped-section .section-title { color: #eef2f6; }
 .wrapped-section .section-subtitle { color: #b3beca; }
+
+/* Typography: JetBrains Mono for headings, controls and statistical data.
+   Atkinson Hyperlegible stays in use for descriptive and body text. */
+:root { --font-display: "JetBrains Mono", monospace; }
+h1, h2, h3, h4, h5, h6,
+button, .generate-btn, .secondary-btn, .nav-btn,
+.section-title, .stat-number, .stat-label, .rank,
+.item-name, .compact-name, .compact-rank, .compact-plays,
+.highlight-value, .highlight-label, .progress-percent,
+.horizontal-rating-count, .horizontal-rating-percentage,
+.chart-key, .chart-bar, .diversity-score {
+  font-family: var(--font-display);
+}

@@ -20,7 +20,12 @@ Die Ursprungsversion der Web-App wurde übernommen. Titel, Manifest und vorläuf
 
 ## Schriftarten
 
-Die Oberfläche und Share-Cards verwenden die lokal eingebundene Open-Source-Schrift **Atkinson Hyperlegible** (Regular/Bold). Die Dateien liegen in `assets/fonts/`; es werden keine Schriftdateien von Drittanbieter-Servern geladen. Lizenz: **SIL Open Font License 1.1**, siehe [assets/fonts/OFL.txt](assets/fonts/OFL.txt). Copyright 2020 Braille Institute of America, Inc.
+wrapped45 liefert beide Schriftarten **lokal** aus `assets/fonts/`, ohne externe Schriftserver:
+
+- **JetBrains Mono** (variable Fontdatei) für Überschriften, Buttons, Statistiken, Zahlen und hervorgehobene Informationen – auch auf den Share-Cards.
+- **Atkinson Hyperlegible** (Regular/Bold) für Fließtexte und Beschreibungen.
+
+Beide Schriftarten stehen unter der **SIL Open Font License 1.1**. Lizenz und Copyright JetBrains Mono: [assets/fonts/JetBrainsMono-OFL.txt](assets/fonts/JetBrainsMono-OFL.txt). Lizenz und Copyright Atkinson Hyperlegible: [assets/fonts/OFL.txt](assets/fonts/OFL.txt). Es wird **keine Nerd-Font-Version** verwendet.
 
 ## Herkunft und Lizenz
 

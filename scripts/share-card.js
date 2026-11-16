@@ -14,7 +14,10 @@ async function generateShareCard() {
   ctx.textBaseline = "top";
 
   // Font is bundled with wrapped45; no requests to external font providers.
-  await document.fonts.load('700 120px "Atkinson Hyperlegible"');
+  await Promise.all([
+    document.fonts.load('700 120px "JetBrains Mono"'),
+    document.fonts.load('400 36px "Atkinson Hyperlegible"'),
+  ]);
   const center = (txt) => (W - ctx.measureText(txt).width) / 2;
   const roundRect = (x, y, w, h, r) => {
     ctx.beginPath();
@@ -62,7 +65,7 @@ async function generateShareCard() {
 
   /* ----------  title ---------- */
   ctx.fillStyle = "#fff";
-  ctx.font = 'bold 120px "Atkinson Hyperlegible", sans-serif';
+  ctx.font = 'bold 120px "JetBrains Mono", sans-serif';
   ctx.fillText(
     s.username || "My Wrapped",
     center(s.username || "My Wrapped"),
@@ -122,10 +125,10 @@ async function generateShareCard() {
 
     let fontSize = 64;
     const maxW = cardWidth - 80 - (c.plays != null ? 220 : 0);
-    ctx.font = `bold ${fontSize}px "Atkinson Hyperlegible", sans-serif`;
+    ctx.font = `bold ${fontSize}px "JetBrains Mono", sans-serif`;
     while (ctx.measureText(c.name).width > maxW && fontSize > 36) {
       fontSize -= 2;
-      ctx.font = `bold ${fontSize}px "Atkinson Hyperlegible", sans-serif`;
+      ctx.font = `bold ${fontSize}px "JetBrains Mono", sans-serif`;
     }
     let [line1, line2] = breakLines(c.name, maxW, fontSize);
     const lineH = fontSize * 1.2;
@@ -133,7 +136,7 @@ async function generateShareCard() {
     if (line2) ctx.fillText(line2, x + 40, y + 140 + lineH);
 
     if (c.plays != null) {
-      ctx.font = '40px "Atkinson Hyperlegible", sans-serif';
+      ctx.font = '40px "JetBrains Mono", sans-serif';
       ctx.fillStyle = "rgba(255,255,255,.8)";
       ctx.fillText(
         `${c.plays.toLocaleString()} plays`,
@@ -149,7 +152,7 @@ async function generateShareCard() {
 
   /* ----------  line-break + ellipsis helper ---------- */
   function breakLines(str, maxW, fontSize) {
-    ctx.font = `bold ${fontSize}px "Atkinson Hyperlegible", sans-serif`;
+    ctx.font = `bold ${fontSize}px "JetBrains Mono", sans-serif`;
     if (ctx.measureText(str).width <= maxW) return [str, ""];
     const lastS = str.lastIndexOf(
       " ",
