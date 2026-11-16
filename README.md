@@ -38,3 +38,7 @@ Dieses Projekt ist eine unabhängige Weiterentwicklung von [mdeik/Navidrome-Wrap
 Die Oberfläche bietet Deutsch und Englisch. Die Sprachauswahl wird lokal als einfache Präferenz gespeichert; Zugangsdaten und Musikstatistiken bleiben flüchtig. Die PWA speichert nur die statischen App-Dateien inklusive Schriftarten in einem getrennten Cache. Eine bereits geladene Startseite kann offline geöffnet werden, die Navidrome-Verbindung und neue Statistiken benötigen weiterhin Internet. Keine Navidrome-API-Antworten oder persönlichen Wrapped-Daten werden im Service-Worker-Cache gespeichert.
 
 Die Sprache der öffentlichen Bedienelemente lässt sich zwischen Deutsch und Englisch wechseln. Die ausführlichen, automatisch erzeugten Beschreibungstexte im Wrapped können teilweise weiterhin englische Formulierungen enthalten.
+
+## Automatisierte Tests
+
+Bei Pushes und Pull Requests führt GitHub Actions mit Node.js 22 Syntaxprüfungen und Regressionstests aus (`.github/workflows/tests.yml`). Die Tests kontrollieren unter anderem HTTPS, POST-Authentifizierung, Retry-Verhalten, Abbrechen, HTML-Maskierung, Sprachauswahl, das Offline-Cache-Verhalten und die Entfernung des Demo-Modus. Für einen vollständigen End-to-End-Test ist weiterhin ein eigener Navidrome-Testserver nötig.
