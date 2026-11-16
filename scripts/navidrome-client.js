@@ -263,9 +263,9 @@ class ClientSideND {
       }
 
       for (const s of alb.song || []) {
-        const pc = s.playCount || 0,
-          dur = s.duration || 0,
-          rat = s.userRating || 0,
+        const pc = Math.max(0, Number(s.playCount) || 0),
+          dur = Math.max(0, Number(s.duration) || 0),
+          rat = Math.max(0, Number(s.userRating) || 0),
           art = s.artist || "",
           artId = s.artistId || "",
           gen = s.genre || alb.genre || "",
@@ -388,7 +388,7 @@ class ClientSideND {
       .map((a) => ({
         name: a.name,
         artists: a.artists || "Unknown",
-        playCount: a.playCount,
+        playCount: Math.max(0, Number(a.playCount) || 0),
         id: a.id,
       }));
     const topRated = songs

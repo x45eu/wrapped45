@@ -323,7 +323,7 @@ class WrappedDisplay {
   renderTopList(items, type) {
     const maxPlays = Math.max(
       ...items.map((item) =>
-        type === "artist" ? item[1] : item.plays || item.playCount || 0
+        type === "artist" ? Number(item[1]) || 0 : Number(item.plays || item.playCount) || 0
       ),
       1
     );
@@ -336,19 +336,19 @@ class WrappedDisplay {
       if (type === "artist") {
         name = item[0] || "Unknown Artist";
         detail = "";
-        playCount = item[1] || 0;
+        playCount = Math.max(0, Number(item[1]) || 0);
       } else if (type === "album") {
         name = item.name || "Unknown Album";
         detail = `by ${
           (Array.isArray(item.artists) ? item.artists : []).map((a) => a.name).join("; ") || "Unknown Artist"
         }`;
-        playCount = item.playCount || 0;
+        playCount = Math.max(0, Number(item.playCount) || 0);
       } else {
         name = item.title || "Unknown Song";
         detail = `by ${
           (Array.isArray(item.artists) ? item.artists : []).map((a) => a.name).join("; ") || "Unknown Artist"
         }`;
-        playCount = item.plays || 0;
+        playCount = Math.max(0, Number(item.plays) || 0);
       }
 
       const width = Number.isFinite(Number(playCount)) ? Math.max(0, Math.min(100, (Number(playCount) / maxPlays) * 100)) : 0;
