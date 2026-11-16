@@ -5,7 +5,7 @@ async function generateShareCard() {
   const M = 80;
   const CARD_H = 280;
   const GAP = 40;
-  const bgGrad = ["#667eea", "#764ba2"];
+  const bgGrad = ["#1b3047", "#19222c"];
 
   const canvas = document.createElement("canvas");
   canvas.width = W;
@@ -13,7 +13,8 @@ async function generateShareCard() {
   const ctx = canvas.getContext("2d");
   ctx.textBaseline = "top";
 
-  // Use the local system font: no third-party requests when sharing stats.
+  // Font is bundled with wrapped45; no requests to external font providers.
+  await document.fonts.load('700 120px "Atkinson Hyperlegible"');
   const center = (txt) => (W - ctx.measureText(txt).width) / 2;
   const roundRect = (x, y, w, h, r) => {
     ctx.beginPath();
@@ -61,7 +62,7 @@ async function generateShareCard() {
 
   /* ----------  title ---------- */
   ctx.fillStyle = "#fff";
-  ctx.font = 'bold 120px Arial, sans-serif';
+  ctx.font = 'bold 120px "Atkinson Hyperlegible", sans-serif';
   ctx.fillText(
     s.username || "My Wrapped",
     center(s.username || "My Wrapped"),
@@ -115,16 +116,16 @@ async function generateShareCard() {
     ctx.fill();
     ctx.restore();
 
-    ctx.font = '80px Arial, sans-serif';
+    ctx.font = '80px "Atkinson Hyperlegible", sans-serif';
     ctx.fillStyle = "#fff";
     ctx.fillText(c.icon, x + 40, y + 40);
 
     let fontSize = 64;
     const maxW = cardWidth - 80 - (c.plays != null ? 220 : 0);
-    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+    ctx.font = `bold ${fontSize}px "Atkinson Hyperlegible", sans-serif`;
     while (ctx.measureText(c.name).width > maxW && fontSize > 36) {
       fontSize -= 2;
-      ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+      ctx.font = `bold ${fontSize}px "Atkinson Hyperlegible", sans-serif`;
     }
     let [line1, line2] = breakLines(c.name, maxW, fontSize);
     const lineH = fontSize * 1.2;
@@ -132,7 +133,7 @@ async function generateShareCard() {
     if (line2) ctx.fillText(line2, x + 40, y + 140 + lineH);
 
     if (c.plays != null) {
-      ctx.font = '40px Arial, sans-serif';
+      ctx.font = '40px "Atkinson Hyperlegible", sans-serif';
       ctx.fillStyle = "rgba(255,255,255,.8)";
       ctx.fillText(
         `${c.plays.toLocaleString()} plays`,
@@ -141,14 +142,14 @@ async function generateShareCard() {
       );
     }
 
-    ctx.font = '36px Arial, sans-serif';
+    ctx.font = '36px "Atkinson Hyperlegible", sans-serif';
     ctx.fillStyle = "rgba(255,255,255,.6)";
     ctx.fillText(c.lbl, x + 40, y + CARD_H - 60);
   }
 
   /* ----------  line-break + ellipsis helper ---------- */
   function breakLines(str, maxW, fontSize) {
-    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+    ctx.font = `bold ${fontSize}px "Atkinson Hyperlegible", sans-serif`;
     if (ctx.measureText(str).width <= maxW) return [str, ""];
     const lastS = str.lastIndexOf(
       " ",

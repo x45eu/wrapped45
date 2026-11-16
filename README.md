@@ -18,6 +18,10 @@ Die geschätzte Hörzeit ergibt sich aus Songdauer × Wiedergabezähler; sie ist
 
 Die Ursprungsversion der Web-App wurde übernommen. Titel, Manifest und vorläufiges SVG-Symbol wurden für wrapped45 angepasst. Weitere funktionale Erweiterungen und Designarbeiten folgen schrittweise.
 
+## Schriftarten
+
+Die Oberfläche und Share-Cards verwenden die lokal eingebundene Open-Source-Schrift **Atkinson Hyperlegible** (Regular/Bold). Die Dateien liegen in `assets/fonts/`; es werden keine Schriftdateien von Drittanbieter-Servern geladen. Lizenz: **SIL Open Font License 1.1**, siehe [assets/fonts/OFL.txt](assets/fonts/OFL.txt). Copyright 2020 Braille Institute of America, Inc.
+
 ## Herkunft und Lizenz
 
 Dieses Projekt ist eine unabhängige Weiterentwicklung von [mdeik/Navidrome-Wrapped](https://github.com/mdeik/Navidrome-Wrapped), lizenziert unter **MIT**.
