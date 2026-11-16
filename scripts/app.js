@@ -3,7 +3,6 @@ class NavidromeWrappedApp {
   constructor() {
     this.currentView = "login";
     this.stats = null;
-    this.isDemo = false;
     this.setupEventListeners();
   }
 
@@ -19,37 +18,6 @@ class NavidromeWrappedApp {
     document
       .getElementById("retryBtn")
       .addEventListener("click", () => this.showLogin());
-  }
-
-  // Add method to generate demo data
-  generateDemoWrapped() {
-    this.isDemo = true;
-    this.setLoadingState(true);
-    this.hideSections();
-
-    // Simulate loading progress for demo
-    let progress = 0;
-    const progressInterval = setInterval(() => {
-      progress += 5;
-      if (progress <= 100) {
-        this.updateProgress(
-          progress,
-          "Generating demo data...",
-          "Using sample music library"
-        );
-      } else {
-        clearInterval(progressInterval);
-
-        // Create comprehensive demo data
-        this.stats = window.createDemoData();
-
-        // Show results after a brief delay to simulate processing
-        setTimeout(() => {
-          this.setLoadingState(false);
-          this.showResults();
-        }, 500);
-      }
-    }, 100);
   }
 
   validateInputs(serverUrl, username, password) {
@@ -125,7 +93,6 @@ class NavidromeWrappedApp {
       const pong = await api._req("ping");
       if (!pong)
         throw new Error("Cannot reach server. Check your URL and credentials.");
-      this.isDemo = false;
       // Generate stats with progress updates
       this.stats = await api.stats((percent, message, step, details) => {
         this.updateProgress(percent, message, details);
@@ -146,7 +113,6 @@ class NavidromeWrappedApp {
 
   showResults() {
     const username = this.stats.username || "Unknown User";
-    const isDemo = username === "Demo User";
     // Usernames are untrusted server data: render as text, never HTML.
     const quickStats = document.getElementById("quickStats");
     quickStats.replaceChildren();
@@ -156,12 +122,6 @@ class NavidromeWrappedApp {
     name.textContent = username;
     label.appendChild(name);
     quickStats.appendChild(label);
-    if (isDemo) {
-      const demoNote = document.createElement("p");
-      demoNote.textContent = "🎭 Demo Mode - Using Sample Data";
-      demoNote.style.fontStyle = "italic";
-      quickStats.appendChild(demoNote);
-    }
 
     document.getElementById("resultsSection").style.display = "block";
     // The result is kept in memory only until the page is reloaded.

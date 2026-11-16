@@ -6,7 +6,7 @@
 
 Die Anwendung besteht aus HTML, CSS und JavaScript und benötigt kein eigenes Backend. Öffne `index.html` oder hoste die Dateien über einen statischen HTTPS-Webserver. Trage deine HTTPS-Navidrome-Server-URL sowie deine Zugangsdaten ein.
 
-**Online-Demo bei aktivierter GitHub Pages-Bereitstellung:** https://x45eu.github.io/wrapped45/
+**Online-Version bei aktivierter GitHub Pages-Bereitstellung:** https://x45eu.github.io/wrapped45/
 
 ## Datenschutz und Sicherheit
 
