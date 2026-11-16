@@ -4,16 +4,16 @@
   --base-fs: 1rem; /* 16 px default */
 
   /* ---- colours ---- */
-  --primary: #667eea;
-  --primary-dark: #764ba2;
+  --primary: #60a5fa;
+  --primary-dark: #30506d;
   --accent: #ff6b6b;
   --success: #4d96ff;
   --error: #ff6b6b;
   --text: #333;
   --text-light: #666;
-  --bg: #f8f9fa;
+  --bg: #10151c;
   --card: #fff;
-  --border: #e1e5e9;
+  --border: #344050;
   --mint: #56d08a;
   --bar-primary: #ffa500;
   --unrated-primary: #ffffff;
@@ -66,11 +66,7 @@ html {
 }
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-dark) 100%
-  );
+  background: var(--bg);
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
@@ -285,11 +281,7 @@ small {
 /* ----------  WRAPPED VIEW  ---------- */
 .wrapped-view {
   display: none;
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--primary-dark) 100%
-  );
+  background: linear-gradient(115deg, #1b3047 0%, #19222c 75%);
   min-height: 100vh;
   color: #fff;
   overflow-x: hidden;
@@ -816,8 +808,13 @@ small {
   border-color: #fff transparent transparent transparent;
 }
 
-/* wrapped45 logo on a light header for faithful dark-gray and blue brand colors */
+/* wrapped45 branding: media45 palette, light wordmark panel for dark-gray lettering */
 header { background: #fff; color: #303638; }
 header .subtitle { color: #536273; opacity: 1; }
 .brand-heading { margin: 0 auto var(--sp-sm); max-width: 40rem; }
 .brand-logo { display: block; width: 100%; max-width: 38rem; height: auto; margin: 0 auto; }
+
+/* media45 outer surfaces / focus highlights */
+body { background-color: #10151c; }
+.container { border: 1px solid #344050; }
+.generate-btn:focus-visible, .secondary-btn:focus-visible, input:focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
