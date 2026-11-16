@@ -10,7 +10,7 @@ Die Anwendung besteht aus HTML, CSS und JavaScript und benötigt kein eigenes Ba
 
 ## Datenschutz und Sicherheit
 
-Die Statistikberechnung läuft im Browser. Der Browser baut eine Verbindung direkt zu deinem Navidrome-Server auf; die Verbindung muss daher vom Server und Browser (CORS) erlaubt werden. Verwende HTTPS für öffentlich erreichbare Navidrome-Instanzen. Die Anwendung speichert berechnete Statistiken für bis zu 90 Tage im `localStorage` des Browsers, jedoch keine Passwörter. Teilen und Löschen der Daten liegen in deiner Hand.
+Die Statistikberechnung läuft im Browser. Der Browser baut eine Verbindung direkt zu deinem Navidrome-Server auf; die Verbindung muss daher vom Server und Browser (CORS) erlaubt werden. Verwende HTTPS für öffentlich erreichbare Navidrome-Instanzen. Fertige Statistiken werden nur während des aktuellen Seitenaufrufs im Arbeitsspeicher gehalten. Nach einem Neuladen beginnt wrapped45 wieder bei der Eingabemaske; ein früherer `localStorage`-Cache wird beim Start entfernt. Passwörter werden nicht dauerhaft gespeichert. Teilen der Ergebnisse ist weiterhin möglich.
 
 Die geschätzte Hörzeit ergibt sich aus Songdauer × Wiedergabezähler; sie ist keine exakte Wiedergabehistorie.
 
@@ -26,4 +26,4 @@ Dieses Projekt ist eine unabhängige Weiterentwicklung von [mdeik/Navidrome-Wrap
 
 ## Design und Logo
 
-Die Wortmarke steht unter `assets/wrapped45-logo.svg`: „wrapped“ in Dunkelgrau (`#303638`) und die „45“ in media45-Blau (`#60a5fa`). Das quadratische App-Icon unter `icons/wrapped45.svg` nutzt denselben Blauton und ein dunkles Hintergrundfeld. Die 45-Glyphe wurde aus dem Logo von [media45](https://github.com/x45eu/media45) übernommen.
+Die Wortmarke steht unter `assets/wrapped45-logo.svg`: „wrapped“ in hellem Grau (`#d4dbe5`) und die „45“ in media45-Blau (`#60a5fa`). Das quadratische App-Icon unter `icons/wrapped45.svg` nutzt denselben Blauton und ein dunkles Hintergrundfeld. Die 45-Glyphe wurde aus dem Logo von [media45](https://github.com/x45eu/media45) übernommen.

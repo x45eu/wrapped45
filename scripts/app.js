@@ -4,7 +4,6 @@ class NavidromeWrappedApp {
     this.currentView = "login";
     this.stats = null;
     this.isDemo = false;
-    this.cached = null;
     this.setupEventListeners();
   }
 
@@ -150,18 +149,13 @@ class NavidromeWrappedApp {
     `;
 
     document.getElementById("resultsSection").style.display = "block";
-    // Only make data persistent if not demo
-    if (!this.isDemo) {
-      saveWrap(this.stats);
-    } else {
-      localStorage.removeItem("navidrome_wrapped");
-    }
+    // The result is kept in memory only until the page is reloaded.
   }
 
   showWrapped() {
     document.getElementById("loginView").style.display = "none";
     document.getElementById("wrappedView").style.display = "block";
-    const data = this.stats || cached; // newest first, cached results fallback
+    const data = this.stats;
     if (!data) {
       this.showLogin();
       return;

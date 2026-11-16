@@ -569,7 +569,7 @@ class WrappedDisplay {
               <button class="share-button" id="shareWrappedBtn">
                 📤 Share Your wrapped45
               </button>
-              <button onclick="localStorage.removeItem('navidrome_wrapped');location.reload()" class="secondary-btn" id="generate-again">Generate Again</button>
+              <button onclick="location.reload()" class="secondary-btn" id="generate-again">Generate Again</button>
             </div>`;
   }
 

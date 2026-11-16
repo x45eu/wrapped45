@@ -1,22 +1,9 @@
-/* ----------  local-storage helpers  ---------- */
-const WRAP_KEY = "navidrome_wrapped";
-function saveWrap(data) {
-  try {
-    localStorage.setItem(WRAP_KEY, JSON.stringify({ ts: Date.now(), data }));
-  } catch {}
-}
-function loadWrap() {
-  try {
-    const raw = localStorage.getItem(WRAP_KEY);
-    if (!raw) return null;
-    const obj = JSON.parse(raw);
-    // expire after 90 days
-    if (Date.now() - obj.ts > 90 * 24 * 60 * 60 * 1000) return null;
-    return obj.data;
-  } catch {
-    return null;
-  }
-}
+/* ----------  session-only Wrapped state  ---------- */
+// Wrapped statistics live only in app memory. Clean up the older persistent
+// cache when updating from previous versions without touching other site data.
+try {
+  localStorage.removeItem("navidrome_wrapped");
+} catch {}
 
 function daysSinceYYYYMMDD(dateStr) {
   if (!dateStr) return null;
@@ -91,14 +78,3 @@ document.addEventListener(
   },
   { passive: true }
 );
-
-/* ----------  restore previous wrapped (if any)  ---------- */
-var cached = loadWrap();
-if (cached) {
-  document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("resultsSection").style.display = "block";
-    document.getElementById(
-      "quickStats"
-    ).innerHTML = `<p>Welcome back! your last wrapped is still here!</p>`;
-  });
-}
