@@ -27,8 +27,8 @@ class WrappedDisplay {
   static safeMarkup(markup) {
     const template = document.createElement("template");
     template.innerHTML = markup;
-    const allowedTags = new Set(["DIV", "P", "SPAN", "H2", "LI", "UL", "BR", "BUTTON", "B"]);
-    const allowedAttributes = new Set(["class", "id", "title", "type", "disabled", "aria-label", "aria-live", "role", "tabindex"]);
+    const allowedTags = new Set(["DIV", "P", "SPAN", "H2", "LI", "UL", "BR", "BUTTON", "B", "SELECT", "OPTION", "LABEL"]);
+    const allowedAttributes = new Set(["class", "id", "title", "type", "disabled", "aria-label", "aria-live", "role", "tabindex", "value", "for"]);
     const nodes = [...template.content.querySelectorAll("*")];
     for (const node of nodes) {
       if (!node.isConnected && !template.content.contains(node)) continue;
@@ -598,7 +598,15 @@ class WrappedDisplay {
                 ${audiophileMessage}
               </p>
 
-              <button class="share-button" id="shareWrappedBtn">
+              <div class="share-format">
+                <label for="shareFormat">Bildformat</label>
+                <select id="shareFormat" aria-label="Bildformat für Share-Card">
+                  <option value="story">Story · 9:16</option>
+                  <option value="portrait">Portrait · 4:5</option>
+                  <option value="square">Quadrat · 1:1</option>
+                </select>
+              </div>
+              <button type="button" class="share-button" id="shareWrappedBtn">
                 📤 Share Your wrapped45
               </button>
               <button type="button" class="secondary-btn" id="generate-again">Generate Again</button>

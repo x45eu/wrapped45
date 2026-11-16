@@ -73,7 +73,7 @@ class ClientSideND {
       const result = data["subsonic-response"];
       if (result?.status === "ok") return result;
       const error = result?.error;
-      if (error?.code === 40 || error?.code === 41) {
+      if (Number(error?.code) === 40 || Number(error?.code) === 41) {
         throw new Error("Anmeldung fehlgeschlagen: Benutzername oder Passwort prüfen.");
       }
       throw new Error("Navidrome hat die Anfrage abgelehnt. Bitte Zugangsdaten und API prüfen.");
@@ -220,7 +220,10 @@ class ClientSideND {
         this.checkCancelled();
         const i = nextAlbum++;
       const alb = (await this._req("getAlbum", { id: albums[i].id }))?.album;
-      if (!alb) continue;
+      if (!alb) {
+        completed += 1;
+        continue;
+      }
 
       for (const s of alb.song || []) {
         const pc = s.playCount || 0,

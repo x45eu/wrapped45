@@ -40,3 +40,5 @@ Die Wortmarke steht unter `assets/wrapped45-logo.svg`: „wrapped“ in hellem G
 ## Stabilität, Datenschutz und Bedienung
 
 Die Wrapped-Ansicht filtert generierte HTML-Inhalte anhand einer Element- und Attribut-Whitelist, um injizierte HTML-/JavaScript-Inhalte aus Musikmetadaten zu entfernen. API-Anfragen haben ein Timeout von 30 Sekunden und können über „Berechnung abbrechen“ beendet werden; Navidrome-Fehler erscheinen als konkrete Meldungen. Bis zu vier Albumanfragen laufen parallel. Die Navigation ist per Tastatur und Touch bedienbar, unterstützt reduzierte Animationen und berücksichtigt kleine Displays. Share-Cards passen längere Namen an und werden ohne Drittanbieter-Schriftserver erzeugt.
+
+Share-Cards lassen sich als Story (9:16), Portrait (4:5) und Quadrat (1:1) exportieren; Schriftarten und Gestaltung werden lokal erzeugt.
