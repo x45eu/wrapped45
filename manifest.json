@@ -1,0 +1,19 @@
+{
+  "name": "wrapped45",
+  "short_name": "wrapped45",
+  "description": "Deine persönliche Musikstatistik für Navidrome.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101322",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "icons/wrapped45.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
