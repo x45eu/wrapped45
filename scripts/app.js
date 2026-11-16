@@ -68,8 +68,8 @@ class NavidromeWrappedApp {
     const percentInt = Math.max(0, Math.min(100, parseInt(percent, 10) || 0));
     document.getElementById("progressFill").style.width = `${percentInt}%`;
     document.getElementById("progressPercent").textContent = `${percentInt}%`;
-    document.getElementById("progressMessage").textContent = message;
-    document.getElementById("progressDetails").textContent = details || "";
+    document.getElementById("progressMessage").textContent = window.WrappedI18n?.t(message) ?? message;
+    document.getElementById("progressDetails").textContent = window.WrappedI18n?.t(details || "") ?? (details || "");
   }
 
   hideSections() {
@@ -127,13 +127,14 @@ class NavidromeWrappedApp {
     const quickStats = document.getElementById("quickStats");
     quickStats.replaceChildren();
     const label = document.createElement("p");
-    label.append("Generated for user: ");
+    label.append((window.WrappedI18n?.t("Generated for user: ") ?? "Generated for user: "));
     const name = document.createElement("strong");
     name.textContent = username;
     label.appendChild(name);
     quickStats.appendChild(label);
 
     document.getElementById("resultsSection").style.display = "block";
+    window.WrappedI18n?.refresh();
     // The result is kept in memory only until the page is reloaded.
   }
 
@@ -161,8 +162,8 @@ class NavidromeWrappedApp {
   }
 
   showError(title, message) {
-    document.getElementById("errorTitle").textContent = title;
-    document.getElementById("errorMessage").textContent = message;
+    document.getElementById("errorTitle").textContent = window.WrappedI18n?.t(title) ?? title;
+    document.getElementById("errorMessage").textContent = window.WrappedI18n?.t(message) ?? message;
     document.getElementById("errorSection").style.display = "block";
   }
 }

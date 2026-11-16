@@ -893,3 +893,14 @@ button:focus-visible, input:focus-visible { outline: 3px solid #93c5fd; outline-
 .share-format label { margin: 0; color: #dce7f2; }
 .share-format select { font: inherit; background: #111a24; color: #eef2f6; border: 1px solid #45627e; border-radius: 8px; padding: .55rem .75rem; min-height: 44px; }
 .share-format select:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+
+/* Language switcher */
+.language-picker { display: flex; justify-content: flex-end; align-items: center; gap: .5rem; font-size: .8rem; color: #dce7f2; }
+.language-picker label { margin: 0; }
+.language-select { min-height: 36px; font: inherit; color: #eef2f6; background: #111a24; border: 1px solid #45627e; border-radius: 8px; padding: .2rem .5rem; }
+.floating-language { position: fixed; z-index: 1100; top: max(.65rem, env(safe-area-inset-top)); right: 1rem; }
+@media (max-width: 480px) { .floating-language { top: .3rem; right: .5rem; font-size: .7rem; } }
+
+.offline-notice { padding: .7rem 1rem; color: #fff; background: #263e55; border-bottom: 1px solid #45627e; }
+.offline-notice[hidden], .pwa-install-btn[hidden] { display: none !important; }
+.pwa-install-btn { display: block; margin: .4rem 0 .4rem auto; background: #30506d; color: #eef2f6; border: 1px solid #45627e; border-radius: 8px; padding: .3rem .8rem; font: inherit; font-size: .75rem; }

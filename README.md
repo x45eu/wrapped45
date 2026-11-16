@@ -32,3 +32,7 @@ Beide Schriftarten stehen unter der **SIL Open Font License 1.1**. Lizenz und Co
 Dieses Projekt ist eine unabhängige Weiterentwicklung von [mdeik/Navidrome-Wrapped](https://github.com/mdeik/Navidrome-Wrapped), lizenziert unter **MIT**.
 
 **Ursprünglicher Copyright-Vermerk: Copyright (c) 2025 Matthew Deik.** Die ursprüngliche MIT-Lizenz wurde unverändert in [LICENSE](LICENSE) übernommen. wrapped45 ist nicht offiziell mit Navidrome oder dem ursprünglichen Projekt verbunden.
+
+## Mehrsprachigkeit und Offline-Betrieb
+
+Die Oberfläche bietet Deutsch und Englisch. Die Sprachauswahl wird lokal als einfache Präferenz gespeichert; Zugangsdaten und Musikstatistiken bleiben flüchtig. Die PWA speichert nur die statischen App-Dateien inklusive Schriftarten in einem getrennten Cache. Eine bereits geladene Startseite kann offline geöffnet werden, die Navidrome-Verbindung und neue Statistiken benötigen weiterhin Internet. Keine Navidrome-API-Antworten oder persönlichen Wrapped-Daten werden im Service-Worker-Cache gespeichert.

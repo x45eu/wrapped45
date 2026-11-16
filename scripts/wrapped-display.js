@@ -20,6 +20,7 @@ class WrappedDisplay {
     };
 
     this.init();
+    window.wrappedDisplay = this;
   }
 
 
@@ -819,6 +820,7 @@ class WrappedDisplay {
     const wrappedContent = document.getElementById("wrappedContent");
     if (wrappedContent) {
       wrappedContent.replaceChildren(WrappedDisplay.safeMarkup(this.sections.join("")));
+      window.WrappedI18n?.translateDOM(wrappedContent);
     }
   }
 
@@ -829,7 +831,13 @@ class WrappedDisplay {
     if (prevBtn && nextBtn) {
       prevBtn.addEventListener("click", () => this.prevSection());
       nextBtn.addEventListener("click", () => this.nextSection());
-      document.getElementById("generate-again")?.addEventListener("click", () => location.reload());
+      const wrappedContent = document.getElementById("wrappedContent");
+      if (wrappedContent && !wrappedContent.dataset.reloadHandler) {
+        wrappedContent.dataset.reloadHandler = "1";
+        wrappedContent.addEventListener("click", (event) => {
+          if (event.target.closest("#generate-again")) location.reload();
+        });
+      }
 
       document.addEventListener("keydown", (e) => {
         if (!document.getElementById("wrappedView") || document.getElementById("wrappedView").style.display === "none") return;
