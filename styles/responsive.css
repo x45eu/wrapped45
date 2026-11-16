@@ -178,3 +178,5 @@
   .navigation { bottom: max(.5rem, env(safe-area-inset-bottom)); }
   .nav-btn { min-width: 48px; min-height: 48px; }
 }
+
+@media (max-width:48rem) { #summary-stats { grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr)); } #summary-stats .highlight-value { font-size:clamp(1.2rem,5vw,1.7rem); } }

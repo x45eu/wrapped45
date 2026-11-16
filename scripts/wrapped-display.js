@@ -70,7 +70,8 @@ class WrappedDisplay {
 
   safeAccess(obj, path, defaultValue = "N/A") {
     try {
-      return path.split(".").reduce((o, p) => o && o[p], obj) || defaultValue;
+      const value = path.split(".").reduce((o, p) => o == null ? undefined : o[p], obj);
+      return value == null ? defaultValue : value;
     } catch (error) {
       return defaultValue;
     }
@@ -412,7 +413,7 @@ class WrappedDisplay {
     );
     const listenedArtists = trueDiversity.listened || 0;
     const libraryArtists = trueDiversity.total || 0;
-    const discoveryRate = trueDiversity.percentage || 0;
+    const discoveryRate = Number.isFinite(Number(trueDiversity.percentage)) ? Number(trueDiversity.percentage) : 0;
     const score = isNaN(diversityScore) ? 0 : diversityScore;
 
     return `
@@ -562,8 +563,8 @@ class WrappedDisplay {
     const timeMessage = this.getTimeMessage(days, hours);
     const diversityMessage = this.getDiversityMessage(diversity);
     const ratingMessage = this.getRatingMessage(
-      this.safeAccess(this.stats, "albumBasedStats.totalRatings"),
-      totalPlays,
+      this.safeAccess(this.stats, "albumBasedStats.totalRatings", 0),
+      this.safeAccess(this.stats, "totalSongs", 0),
       this.safeAccess(this.stats, "numFavorites", 0)
     );
     const eraMessage = this.getEraMessage(decadeRange);
@@ -600,7 +601,7 @@ class WrappedDisplay {
                   <div class="highlight-value">${WrappedDisplay.escapeHTML(neglectedTrack.title)}</div>
                   <div class="highlight-label">Most Neglected Song</div>
                 </div>`
-                    : "<p> ${neglectedTrack} </p>"
+                    : ""
                 }
               </div>
 
@@ -669,60 +670,21 @@ class WrappedDisplay {
     )}%</b> – a laser-focused aficionado; why dilute perfection?`;
   }
 
-  getRatingMessage(rated, totalPlays, favorites) {
-    const ratedPct = totalPlays ? +((rated / totalPlays) * 100).toFixed(0) : 0;
-    const favPct = totalPlays
-      ? +((favorites / totalPlays) * 100).toFixed(0)
-      : 0;
-
-    if (window.WrappedI18n?.language === "de") {
-      if (ratedPct === 0 && favPct === 0) return "Du lässt die Musik für sich sprechen – bisher ohne Bewertungen und Favoriten.";
-      if (ratedPct > 70) return `Du bewertest viel Musik (<b>${ratedPct}%</b>) und markierst <b>${favPct}%</b> als Favoriten – du weißt, was dir gefällt.`;
-      if (favPct > 20) return `Du hast viele Favoriten (<b>${favPct}%</b>) und bewertest <b>${ratedPct}%</b> – deine Lieblingsmusik ist dir wichtig.`;
-      return `Du bewertest <b>${ratedPct}%</b> und favorisierst <b>${favPct}%</b> deiner Wiedergaben – Musikgenuss nach deinem Geschmack.`;
+  getRatingMessage(rated, totalSongs, favorites) {
+    const safe = (v) => { const n=Number(v); return Number.isFinite(n) && n>0?n:0; };
+    const total=safe(totalSongs), rating=Math.min(total,safe(rated)), fav=Math.min(total,safe(favorites));
+    const rp=total?Math.round(rating/total*100):0, fp=total?Math.round(fav/total*100):0;
+    const de=window.WrappedI18n?.language==="de";
+    if (!total) return de?"Keine Titel für eine Bewertungsstatistik vorhanden.":"No tracks available for rating statistics.";
+    if (!rating && !fav) return de?"Du hast bisher keine Titel bewertet oder als Favoriten markiert.":"You haven't rated or favourited any tracks yet.";
+    if (de) {
+      if (!rating) return `Du hast noch keine Titel bewertet, aber <b>${fp}%</b> deiner Titel als Favoriten markiert.`;
+      if (!fav) return `Du hast <b>${rp}%</b> deiner Titel bewertet, aber noch keine Favoriten markiert.`;
+      return `Du hast <b>${rp}%</b> deiner Titel bewertet und <b>${fp}%</b> als Favoriten markiert.`;
     }
-
-    if (ratedPct > 80 && favPct <= 10)
-      return `Rated <b>${ratedPct}% of plays</b>, favourited <b>${favPct}% of plays</b> – precise and selective. Few songs earn your seal.`;
-
-    if (ratedPct > 70 && favPct > 20)
-      return `Rated <b>${ratedPct}% of plays</b> and favourited <b>${favPct}% of plays</b> – analytical yet emotional. You live for the best.`;
-
-    if (ratedPct > 40 && favPct > 10)
-      return `Rated <b>${ratedPct}% of plays</b>, favourited <b>${favPct}% of plays</b> – equal parts logic and love. You know what you like.`;
-
-    if (ratedPct > 50 && favPct < 5)
-      return `Rated <b>${ratedPct}% of plays</b> but barely any favourites – you study music more than you feel it.`;
-
-    if (ratedPct < 15 && favPct > 20)
-      return `Few ratings (<b>${ratedPct}% of plays</b>), many favourites (<b>${favPct}% of plays</b>) – you trust your gut, not the numbers.`;
-
-    if (ratedPct <= 20 && favPct <= 10 && (ratedPct > 0 || favPct > 0))
-      return `Rated <b>${ratedPct}% of plays</b>, favourited <b>${favPct}% of plays</b> – laid-back and free. You enjoy without overthinking.`;
-
-    if (favPct > 30 && ratedPct > 40)
-      return `Rated <b>${ratedPct}% of plays</b>, favourited <b>${favPct}% of plays</b> – you don’t just listen, you celebrate.`;
-
-    if (ratedPct > 25 && favPct === 0)
-      return `Rated <b>${ratedPct}% of plays</b> but no favorites – all logic, no bias. You observe from afar.`;
-
-    if (ratedPct === 0 && favPct > 0)
-      return `No ratings, <b>${favPct}% of plays</b> favourites – you skip the math and follow emotion.`;
-
-    if (ratedPct > 0 && favPct === 0)
-      return `Rated <b>${ratedPct}% of plays</b> – still waiting for a track to truly hit home.`;
-
-    if (ratedPct <= 5 && favPct <= 5 && (ratedPct > 0 || favPct > 0))
-      return `Just starting out – <b>${ratedPct}% of plays</b> rated, <b>${favPct}% of plays</b> favourited. Discovery phase.`;
-
-    if (ratedPct === 0 && favPct === 0) {
-      return `No ratings, no favourites – pure listener. You let music flow without judgment.`;
-    }
-    if (ratedPct > 0 || favPct > 0) {
-      return `Rated <b>${ratedPct}% of plays</b>, favourited <b>${favPct}% of plays</b> – easy-going and open. You sample, smile, and move on.`;
-    }
-
-    return `No ratings, no favourites – pure listener. You let music flow without judgment.`;
+    if (!rating) return `No ratings yet; <b>${fp}%</b> of your tracks are favourites.`;
+    if (!fav) return `You've rated <b>${rp}%</b> of your tracks, with no favourites yet.`;
+    return `You've rated <b>${rp}%</b> of your tracks and marked <b>${fp}%</b> as favourites.`;
   }
 
   getEraMessage(decadeRange) {

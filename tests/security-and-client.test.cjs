@@ -91,3 +91,13 @@ test('markup renderer enforces a strict whitelist and removes inline handlers', 
   assert.match(displaySource, /replaceChildren\(WrappedDisplay\.safeMarkup/);
   assert.doesNotMatch(displaySource, /onclick="location\.reload\(\)"/);
 });
+
+test('rating message never returns NaN or Infinity', () => {
+ const context={window:{WrappedI18n:{language:'de'}}}; vm.createContext(context);
+ vm.runInContext(displaySource+'\nthis.Display=WrappedDisplay;',context);
+ const d=Object.create(context.Display.prototype);
+ for(const args of [[0,915,0],[undefined,915,0],['N/A',915,0],[null,0,0],[Infinity,915,NaN],[17,100,5]]) assert.doesNotMatch(d.getRatingMessage(...args),/NaN|Infinity|undefined|N\/A/);
+ assert.match(d.getRatingMessage(0,915,0),/keine Titel bewertet/);
+ assert.match(d.getRatingMessage(17,100,5),/17%/);
+ assert.equal(d.safeAccess({count:0},'count','N/A'),0);
+});

@@ -524,13 +524,9 @@ class ClientSideND {
       ratingDistribution: dist,
       genreBreakdown: genreSongCounts,
       decadeBreakdown: decadeSongCounts,
-      diversityScore:
-        (1 -
-          [...artistPlays.values()].reduce(
-            (a, p) => a + (p / totalPlays) ** 2,
-            0
-          )) *
-        100,
+      diversityScore: totalPlays > 0 ? Math.max(0, Math.min(100, (1 -
+        [...artistPlays.values()].reduce((a,p) => a + (p / totalPlays) ** 2, 0)
+      ) * 100)) : 0,
       deepArtists,
       neglectedTrack: oldestSong,
       qualityScore: Math.round(avgQuality),

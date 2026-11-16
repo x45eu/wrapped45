@@ -42,3 +42,5 @@ Die Sprache der Oberfläche und der generierten Erläuterungstexte lässt sich z
 ## Automatisierte Tests
 
 Bei Pushes und Pull Requests führt GitHub Actions mit Node.js 22 Syntaxprüfungen und Regressionstests aus (`.github/workflows/tests.yml`). Die Tests kontrollieren unter anderem HTTPS, POST-Authentifizierung, Retry-Verhalten, Abbrechen, HTML-Maskierung, Sprachauswahl, das Offline-Cache-Verhalten und die Entfernung des Demo-Modus. Für einen vollständigen End-to-End-Test ist weiterhin ein eigener Navidrome-Testserver nötig.
+
+Darstellung: Bewertungs- und Favoritenanteile werden auf Basis der Anzahl der Titel berechnet; fehlende Werte verursachen keine `NaN%`-Anzeige. Lange Namen umbrechen in Zusammenfassungskarten.
