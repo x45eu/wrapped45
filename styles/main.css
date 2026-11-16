@@ -9,10 +9,10 @@
   --accent: #ff6b6b;
   --success: #4d96ff;
   --error: #ff6b6b;
-  --text: #333;
-  --text-light: #666;
+  --text: #eef2f6;
+  --text-light: #b3beca;
   --bg: #10151c;
-  --card: #fff;
+  --card: #19222c;
   --border: #344050;
   --mint: #56d08a;
   --bar-primary: #ffa500;
@@ -97,7 +97,7 @@ header {
     var(--primary) 0%,
     var(--primary-dark) 100%
   );
-  color: #fff;
+  color: var(--text);
   padding: var(--sp-2xl) var(--sp-lg);
   text-align: center;
 }
@@ -138,10 +138,10 @@ input {
 input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 0.125rem rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 0.125rem rgba(96, 165, 250, 0.2);
 }
 input::placeholder {
-  color: #999;
+  color: #9daebe;
   opacity: 1;
 }
 small {
@@ -262,8 +262,8 @@ small {
 
 /* Info Section */
 .info-section {
-  background: #f3f4f6;
-  border-left: 0.25rem solid #9ca3af;
+  background: #202a35;
+  border-left: 0.25rem solid #45627e;
   padding: var(--sp-md);
   border-radius: var(--r-lg);
   margin: var(--sp-xl);
@@ -808,9 +808,9 @@ small {
   border-color: #fff transparent transparent transparent;
 }
 
-/* wrapped45 branding: media45 palette, light wordmark panel for dark-gray lettering */
-header { background: #fff; color: #303638; }
-header .subtitle { color: #536273; opacity: 1; }
+/* wrapped45 branding: same dark text and surface palette as media45 */
+header { background: #202a35; color: #eef2f6; border-bottom: 1px solid #344050; }
+header .subtitle { color: #b3beca; opacity: 1; }
 .brand-heading { margin: 0 auto var(--sp-sm); max-width: 40rem; }
 .brand-logo { display: block; width: 100%; max-width: 38rem; height: auto; margin: 0 auto; }
 
@@ -818,3 +818,24 @@ header .subtitle { color: #536273; opacity: 1; }
 body { background-color: #10151c; }
 .container { border: 1px solid #344050; }
 .generate-btn:focus-visible, .secondary-btn:focus-visible, input:focus-visible { outline: 3px solid #60a5fa; outline-offset: 2px; }
+
+/* media45 typography and accessible controls */
+.container, .form-section, .results-section, .error-section, .info-section { color: var(--text); }
+.form-section h2, .info-section h3, .success-message strong { color: #eef2f6; }
+label { color: #dce7f2; }
+input { background: #111a24; color: #eef2f6; border-color: #344050; }
+input::placeholder { color: #9daebe; }
+input:focus { border-color: #60a5fa; }
+small, .info-section, .info-section p, .stat-label, .item-detail, .compact-detail { color: #b3beca; }
+a { color: #9bc8ff; }
+a:hover { color: #c1ddff; }
+.generate-btn { background: #60a5fa; color: #101b2c; font-weight: 700; }
+.generate-btn:hover:not(:disabled) { background: #93c5fd; }
+.secondary-btn { color: #9bc8ff; border-color: #45627e; }
+.secondary-btn:hover { background: #30506d; color: #eef2f6; }
+.quick-stats { background: #1b3047; color: #eef2f6; }
+.success-message { background: #19354a; color: #eef2f6; }
+.error-message { background: #38232e; color: #eef2f6; }
+.wrapped-view { color: #eef2f6; }
+.wrapped-section .section-title { color: #eef2f6; }
+.wrapped-section .section-subtitle { color: #b3beca; }

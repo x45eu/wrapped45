@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 260" role="img" aria-labelledby="title">
   <title id="title">wrapped45</title>
-  <!-- Brand wordmark: charcoal text, media45 blue, and an audio waveform above the w. -->
-  <text x="42" y="208" fill="#303638" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="165" letter-spacing="-8">wrapped</text>
+  <!-- media45 wordmark palette: light-gray text and blue 45 -->
+  <text x="42" y="208" fill="#d4dbe5" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="165" letter-spacing="-8">wrapped</text>
   <path d="M27 112 C65 69 99 151 136 105 S196 13 227 75 S274 133 306 74 S357 78 397 79 C420 85 446 85 467 74"
         fill="none" stroke="#60a5fa" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
   <svg x="678" y="58" width="230" height="181" viewBox="740 82 320 212" aria-hidden="true">
