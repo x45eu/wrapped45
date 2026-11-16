@@ -60,16 +60,20 @@ async function generateShareCard(format = "story") {
   const username = fitText(stats.username || "My wrapped45", W - 120, H === 1080 ? 72 : 104, 36);
   ctx.font = `700 ${username.size}px "JetBrains Mono", monospace`;
   ctx.fillStyle = "#eef2f6";
-  ctx.fillText(username.text, (W - ctx.measureText(username.text).width) / 2, H === 1080 ? 48 : 70);
+  // Reserve breathing room between username and subtitle for every format
+  // (including shorter/longer usernames that use a different font size).
+  const usernameY = H === 1080 ? 38 : 55;
+  const subtitleY = usernameY + username.size + (H === 1080 ? 42 : 52);
+  ctx.fillText(username.text, (W - ctx.measureText(username.text).width) / 2, usernameY);
   ctx.fillStyle = "#9bc8ff";
   ctx.font = '400 34px "Atkinson Hyperlegible", sans-serif';
   const sub = "Your music, in numbers";
-  ctx.fillText(sub, (W - ctx.measureText(sub).width) / 2, H === 1080 ? 138 : 165);
+  ctx.fillText(sub, (W - ctx.measureText(sub).width) / 2, subtitleY);
 
   const compact = H < 1920;
   const gap = compact ? 22 : 28;
   const margin = 64;
-  const top = compact ? (H === 1080 ? 224 : 252) : 275;
+  const top = compact ? (H === 1080 ? 245 : 305) : 310;
   const half = (W - margin * 2 - gap) / 2;
   const cardH = compact ? (H === 1080 ? 224 : 285) : 245;
 

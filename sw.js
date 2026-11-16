@@ -1,5 +1,5 @@
 /* wrapped45 offline shell. Never cache cross-origin API traffic or user data. */
-const CACHE_NAME = "wrapped45-shell-v3";
+const CACHE_NAME = "wrapped45-shell-v4";
 const SHELL = [
   "./", "./index.html", "./manifest.json", "./icons/wrapped45.svg", "./icons/wrapped45-192.png", "./icons/wrapped45-512.png",
   "./assets/wrapped45-logo.svg?v=2",
