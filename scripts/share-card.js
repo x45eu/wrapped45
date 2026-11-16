@@ -66,11 +66,15 @@ async function generateShareCard() {
   /* ----------  title ---------- */
   ctx.fillStyle = "#fff";
   ctx.font = 'bold 120px "JetBrains Mono", sans-serif';
-  ctx.fillText(
-    s.username || "My Wrapped",
-    center(s.username || "My Wrapped"),
-    120
-  );
+  const displayUser = String(s.username || "My Wrapped");
+  const safeUsername = displayUser.length > 22 ? displayUser.slice(0, 21) + "…" : displayUser;
+  let titleSize = 120;
+  do {
+    ctx.font = `bold ${titleSize}px "JetBrains Mono", sans-serif`;
+    if (ctx.measureText(safeUsername).width <= W - M * 2) break;
+    titleSize -= 5;
+  } while (titleSize > 48);
+  ctx.fillText(safeUsername, center(safeUsername), 120);
 
   /* ---------- plays + time ---------- */
   const COL_W = (W - M * 3) / 2;
@@ -151,50 +155,57 @@ async function generateShareCard() {
   }
 
   /* ----------  line-break + ellipsis helper ---------- */
-  function breakLines(str, maxW, fontSize) {
+  function breakLines(value, maxW, fontSize) {
+    const text = String(value ?? "");
     ctx.font = `bold ${fontSize}px "JetBrains Mono", sans-serif`;
-    if (ctx.measureText(str).width <= maxW) return [str, ""];
-    const lastS = str.lastIndexOf(
-      " ",
-      Math.floor((str.length * maxW) / ctx.measureText(str).width)
-    );
-    let l1 = lastS > 0 ? str.slice(0, lastS) : str.slice(0, -3);
-    let l2 = lastS > 0 ? str.slice(lastS + 1) : "";
-    if (ctx.measureText(l2).width > maxW) {
-      while (ctx.measureText(l2 + "…").width > maxW && l2.length > 1)
-        l2 = l2.slice(0, -1);
-      l2 += "…";
+    const fit = (str) => ctx.measureText(str).width <= maxW;
+    if (fit(text)) return [text, ""];
+    let first = "";
+    const words = text.split(/\s+/);
+    while (words.length && fit(first ? first + " " + words[0] : words[0])) {
+      first = first ? first + " " + words.shift() : words.shift();
     }
-    return [l1, l2];
+    if (!first) {
+      let rest = text;
+      while (rest && fit(first + rest[0])) { first += rest[0]; rest = rest.slice(1); }
+      words.splice(0, words.length, rest);
+    }
+    let second = words.join(" ").trim();
+    if (!first) first = "…";
+    if (!fit(second)) {
+      while (second && !fit(second + "…")) second = second.slice(0, -1);
+      second += "…";
+    }
+    return [first, second];
   }
 
   return new Promise((res) => canvas.toBlob(res, "image/png", 0.95));
 }
 
-/* ----------  attach to button ---------- */
-document.addEventListener("DOMContentLoaded", () => {
-  const tryAttach = () => {
-    const btn = document.getElementById("shareWrappedBtn");
-    if (!btn) return setTimeout(tryAttach, 300);
-    btn.addEventListener("click", async () => {
-      btn.disabled = true;
-      btn.textContent = "Creating card…";
-      const blob = await generateShareCard();
-      btn.disabled = false;
-      btn.textContent = "📤 Share Your Wrapped";
-      const file = new File([blob], "MyNavidromeWrapped.png", {
-        type: "image/png",
-      });
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ title: "My Navidrome Wrapped", files: [file] });
-      } else {
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = file.name;
-        a.click();
-        URL.revokeObjectURL(a.href);
-      }
-    });
-  };
-  tryAttach();
+/* Delegate click handling to avoid perpetual polling for a dynamic button. */
+document.addEventListener("click", async (event) => {
+  const btn = event.target.closest("#shareWrappedBtn");
+  if (!btn || btn.disabled) return;
+  btn.disabled = true;
+  btn.textContent = "Creating card…";
+  try {
+    const blob = await generateShareCard();
+    if (!blob) throw new Error("Bild konnte nicht erzeugt werden.");
+    const file = new File([blob], "wrapped45.png", { type: "image/png" });
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: "My wrapped45", files: [file] });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") alert("Share-Card konnte nicht erstellt werden.");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "📤 Share Your Wrapped";
+  }
 });

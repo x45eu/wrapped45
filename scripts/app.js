@@ -3,6 +3,7 @@ class NavidromeWrappedApp {
   constructor() {
     this.currentView = "login";
     this.stats = null;
+    this.activeClient = null;
     this.setupEventListeners();
   }
 
@@ -11,6 +12,7 @@ class NavidromeWrappedApp {
     document
       .getElementById("generateBtn")
       .addEventListener("click", () => this.generateWrapped());
+    document.getElementById("cancelBtn").addEventListener("click", () => this.cancelGeneration());
     // Navigation between views
     document
       .getElementById("viewWrappedBtn")
@@ -47,19 +49,24 @@ class NavidromeWrappedApp {
     return true;
   }
 
+  cancelGeneration() {
+    this.activeClient?.cancel();
+  }
+
   setLoadingState(loading) {
     const generateBtn = document.getElementById("generateBtn");
     const btnText = generateBtn.querySelector(".btn-text");
     const btnLoading = generateBtn.querySelector(".btn-loading");
 
+    document.getElementById("cancelBtn").hidden = !loading;
     generateBtn.disabled = loading;
     btnText.style.display = loading ? "none" : "inline";
     btnLoading.style.display = loading ? "block" : "none";
   }
 
   updateProgress(percent, message, details) {
-    const percentInt = parseInt(percent);
-    document.getElementById("progressFill").style.width = `${percent}%`;
+    const percentInt = Math.max(0, Math.min(100, parseInt(percent, 10) || 0));
+    document.getElementById("progressFill").style.width = `${percentInt}%`;
     document.getElementById("progressPercent").textContent = `${percentInt}%`;
     document.getElementById("progressMessage").textContent = message;
     document.getElementById("progressDetails").textContent = details || "";
@@ -85,6 +92,7 @@ class NavidromeWrappedApp {
     let api;
     try {
       api = new ClientSideND(serverUrl, username, password);
+      this.activeClient = api;
       // The password is no longer kept in a form field while scanning.
       document.getElementById("password").value = "";
 
@@ -103,9 +111,11 @@ class NavidromeWrappedApp {
 
       this.showResults();
     } catch (error) {
+      this.stats = null;
       this.showError("Generation Failed", error.message);
     } finally {
       if (api) api.clearCredentials();
+      this.activeClient = null;
       document.getElementById("password").value = "";
       this.setLoadingState(false);
     }

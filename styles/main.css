@@ -875,3 +875,15 @@ button, .generate-btn, .secondary-btn, .nav-btn,
 .chart-key, .chart-bar, .diversity-score {
   font-family: var(--font-display);
 }
+
+/* Accessibility and interaction improvements */
+.cancel-btn { display: block; width: 100%; margin-top: var(--sp-sm); }
+.cancel-btn[hidden] { display: none !important; }
+button, input { min-height: 44px; }
+button:focus-visible, input:focus-visible { outline: 3px solid #93c5fd; outline-offset: 3px; }
+.stat-number, .item-name, .compact-name, .highlight-value, .compact-detail {
+  overflow-wrap: anywhere;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

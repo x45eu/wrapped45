@@ -165,3 +165,16 @@
     min-width: 3rem;
   }
 }
+
+@media (max-width: 48rem) {
+  .wrapped-section { padding: 1rem 1rem 6rem; }
+  .section-title { font-size: clamp(1.5rem, 6vw, 2.5rem); overflow-wrap: anywhere; }
+  .section-subtitle { font-size: clamp(1rem, 4vw, 1.35rem); }
+  .top-item .item-name, .top-item .item-detail,
+  .top-item-compact .compact-name, .top-item-compact .compact-detail {
+    max-width: 100%; white-space: normal; overflow-wrap: anywhere;
+  }
+  .stat-number { font-size: clamp(1.4rem, 7vw, 2.5rem); }
+  .navigation { bottom: max(.5rem, env(safe-area-inset-bottom)); }
+  .nav-btn { min-width: 48px; min-height: 48px; }
+}

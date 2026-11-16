@@ -22,6 +22,37 @@ class WrappedDisplay {
     this.init();
   }
 
+
+  // Sections have known presentation markup; never trust server-provided metadata as HTML.
+  static safeMarkup(markup) {
+    const template = document.createElement("template");
+    template.innerHTML = markup;
+    const allowedTags = new Set(["DIV", "P", "SPAN", "H2", "LI", "UL", "BR", "BUTTON", "B"]);
+    const allowedAttributes = new Set(["class", "id", "title", "type", "disabled", "aria-label", "aria-live", "role", "tabindex"]);
+    const nodes = [...template.content.querySelectorAll("*")];
+    for (const node of nodes) {
+      if (!node.isConnected && !template.content.contains(node)) continue;
+      if (!allowedTags.has(node.tagName)) {
+        node.replaceWith(document.createTextNode(node.textContent || ""));
+        continue;
+      }
+      for (const attr of [...node.attributes]) {
+        const name = attr.name.toLowerCase();
+        if (allowedAttributes.has(name) || name.startsWith("data-") && /^data-[a-z0-9-]+$/.test(name)) continue;
+        if (name === "style") {
+          // All style declarations are presentation-only. Strip potential CSS injection.
+          if (!/^[a-z0-9\s:;.,#%()\-]+$/i.test(attr.value) ||
+              /url\s*\(|expression\s*\(|@import|behavior\s*:|javascript/i.test(attr.value)) {
+            node.removeAttribute("style");
+          }
+          continue;
+        }
+        node.removeAttribute(attr.name);
+      }
+    }
+    return template.content;
+  }
+
   init() {
     this.createSections();
     this.render();
@@ -189,6 +220,7 @@ class WrappedDisplay {
 
   getChartData(dataPath, countPath) {
     const rawData = this.safeAccess(this.stats, dataPath, []);
+    if (!Array.isArray(rawData)) return [];
     const total = rawData.reduce((sum, [, plays]) => sum + plays, 0) || 1;
 
     return rawData.map(([label, plays]) => ({
@@ -296,13 +328,13 @@ class WrappedDisplay {
       } else if (type === "album") {
         name = item.name || "Unknown Album";
         detail = `by ${
-          item.artists.map((a) => a.name).join("; ") || "Unknown Artist"
+          (Array.isArray(item.artists) ? item.artists : []).map((a) => a.name).join("; ") || "Unknown Artist"
         }`;
         playCount = item.playCount || 0;
       } else {
         name = item.title || "Unknown Song";
         detail = `by ${
-          item.artists.map((a) => a.name).join("; ") || "Unknown Artist"
+          (Array.isArray(item.artists) ? item.artists : []).map((a) => a.name).join("; ") || "Unknown Artist"
         }`;
         playCount = item.plays || 0;
       }
@@ -569,7 +601,7 @@ class WrappedDisplay {
               <button class="share-button" id="shareWrappedBtn">
                 📤 Share Your wrapped45
               </button>
-              <button onclick="location.reload()" class="secondary-btn" id="generate-again">Generate Again</button>
+              <button type="button" class="secondary-btn" id="generate-again">Generate Again</button>
             </div>`;
   }
 
@@ -767,7 +799,7 @@ class WrappedDisplay {
   render() {
     const wrappedContent = document.getElementById("wrappedContent");
     if (wrappedContent) {
-      wrappedContent.innerHTML = this.sections.join("");
+      wrappedContent.replaceChildren(WrappedDisplay.safeMarkup(this.sections.join("")));
     }
   }
 
@@ -778,8 +810,10 @@ class WrappedDisplay {
     if (prevBtn && nextBtn) {
       prevBtn.addEventListener("click", () => this.prevSection());
       nextBtn.addEventListener("click", () => this.nextSection());
+      document.getElementById("generate-again")?.addEventListener("click", () => location.reload());
 
       document.addEventListener("keydown", (e) => {
+        if (!document.getElementById("wrappedView") || document.getElementById("wrappedView").style.display === "none") return;
         if (e.key === "ArrowLeft") this.prevSection();
         if (e.key === "ArrowRight") this.nextSection();
       });

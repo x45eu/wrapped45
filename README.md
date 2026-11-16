@@ -36,3 +36,7 @@ Dieses Projekt ist eine unabhängige Weiterentwicklung von [mdeik/Navidrome-Wrap
 ## Design und Logo
 
 Die Wortmarke steht unter `assets/wrapped45-logo.svg`: „wrapped“ in hellem Grau (`#d4dbe5`) und die „45“ in media45-Blau (`#60a5fa`). Das quadratische App-Icon unter `icons/wrapped45.svg` nutzt denselben Blauton und ein dunkles Hintergrundfeld. Die 45-Glyphe wurde aus dem Logo von [media45](https://github.com/x45eu/media45) übernommen.
+
+## Stabilität, Datenschutz und Bedienung
+
+Die Wrapped-Ansicht filtert generierte HTML-Inhalte anhand einer Element- und Attribut-Whitelist, um injizierte HTML-/JavaScript-Inhalte aus Musikmetadaten zu entfernen. API-Anfragen haben ein Timeout von 30 Sekunden und können über „Berechnung abbrechen“ beendet werden; Navidrome-Fehler erscheinen als konkrete Meldungen. Bis zu vier Albumanfragen laufen parallel. Die Navigation ist per Tastatur und Touch bedienbar, unterstützt reduzierte Animationen und berücksichtigt kleine Displays. Share-Cards passen längere Namen an und werden ohne Drittanbieter-Schriftserver erzeugt.

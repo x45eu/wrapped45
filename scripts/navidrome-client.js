@@ -9,11 +9,21 @@ class ClientSideND {
     this.user = user;
     this.pass = pass;
     this.base = `${this.root}/rest`;
+    this.controller = new AbortController();
   }
 
   clearCredentials() {
     this.pass = null;
     this.user = null;
+  }
+
+  cancel() {
+    this.controller.abort();
+    this.clearCredentials();
+  }
+
+  checkCancelled() {
+    if (this.controller.signal.aborted) throw new Error("Berechnung abgebrochen.");
   }
 
   _rand(len = 16) {
@@ -25,23 +35,21 @@ class ClientSideND {
   }
 
   async _req(end, params = {}) {
-    if (typeof this.pass !== "string" || typeof this.user !== "string") return null;
+    this.checkCancelled();
+    if (typeof this.pass !== "string" || typeof this.user !== "string") {
+      throw new Error("Anmeldung nicht verfügbar. Bitte neu starten.");
+    }
     const salt = this._rand();
     const token = md5(this.pass + salt);
-
     const queryParams = new URLSearchParams({
-      u: this.user,
-      t: token,
-      s: salt,
-      v: "1.16.1",
-      c: "wrapped45",
-      f: "json",
+      u: this.user, t: token, s: salt, v: "1.16.1", c: "wrapped45", f: "json",
       ...params,
     });
-
+    const timeout = new AbortController();
+    const timeoutId = setTimeout(() => timeout.abort(), 30000);
+    const onCancel = () => timeout.abort();
+    this.controller.signal.addEventListener("abort", onCancel, { once: true });
     try {
-      // Navidrome accepts Subsonic parameters from POST form bodies.
-      // Keep username, salted token and parameters out of URLs and access logs.
       const response = await fetch(`${this.base}/${end}`, {
         method: "POST",
         headers: {
@@ -53,19 +61,32 @@ class ClientSideND {
         credentials: "omit",
         redirect: "error",
         referrerPolicy: "no-referrer",
+        signal: timeout.signal,
       });
-
-      if (!response.ok) {
-        throw new Error(`Navidrome API responded with HTTP ${response.status}`);
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Anmeldung fehlgeschlagen: Benutzername oder Passwort prüfen.");
       }
-
+      if (!response.ok) {
+        throw new Error(`Navidrome antwortet mit HTTP ${response.status}. Bitte Server oder Proxy prüfen.`);
+      }
       const data = await response.json();
-      return data["subsonic-response"]?.status === "ok"
-        ? data["subsonic-response"]
-        : null;
-    } catch (_error) {
-      // Never log request URLs, tokens, usernames or error objects.
-      return null;
+      const result = data["subsonic-response"];
+      if (result?.status === "ok") return result;
+      const error = result?.error;
+      if (error?.code === 40 || error?.code === 41) {
+        throw new Error("Anmeldung fehlgeschlagen: Benutzername oder Passwort prüfen.");
+      }
+      throw new Error("Navidrome hat die Anfrage abgelehnt. Bitte Zugangsdaten und API prüfen.");
+    } catch (error) {
+      if (this.controller.signal.aborted) throw new Error("Berechnung abgebrochen.");
+      if (timeout.signal.aborted) throw new Error("Zeitüberschreitung: Navidrome antwortet nicht innerhalb von 30 Sekunden.");
+      if (error instanceof TypeError) {
+        throw new Error("Keine Verbindung zu Navidrome. HTTPS, CORS und Server-Erreichbarkeit prüfen.");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timeoutId);
+      this.controller.signal.removeEventListener("abort", onCancel);
     }
   }
 
@@ -164,6 +185,7 @@ class ClientSideND {
     /* fetch all albums */
     progressCallback(0, "Starting album scan", "albums");
     while (true) {
+      this.checkCancelled();
       const batch =
         (
           await this._req("getAlbumList2", {
@@ -190,7 +212,13 @@ class ClientSideND {
     progressCallback(30, `Processing ${albums.length} albums`, "albums");
 
     /* walk albums → songs */
-    for (let i = 0; i < albums.length; i++) {
+    // At most four concurrent album requests: faster without flooding Navidrome.
+    let nextAlbum = 0;
+    let completed = 0;
+    const processAlbums = async () => {
+      while (nextAlbum < albums.length) {
+        this.checkCancelled();
+        const i = nextAlbum++;
       const alb = (await this._req("getAlbum", { id: albums[i].id }))?.album;
       if (!alb) continue;
 
@@ -276,18 +304,15 @@ class ClientSideND {
           ratingSum += rat;
         }
       }
-      // Update progress every 50 albums
-      if (i % 50 === 0) {
-        progressCallback(
-          30 + (i / albums.length) * 60,
-          `Album ${i}/${albums.length}`,
-          "albums"
-        );
+      completed += 1;
+      if (completed % 25 === 0 || completed === albums.length) {
+        progressCallback(30 + (completed / albums.length) * 60,
+          `Album ${completed}/${albums.length}`, "albums");
       }
 
-      // Small delay to prevent overwhelming the server
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(4, albums.length) }, () => processAlbums()));
 
     const avgBitrate = totalBitrate / bitrateCount || 0;
     const avgQuality = qualityCount ? totalQuality / qualityCount : 0;
