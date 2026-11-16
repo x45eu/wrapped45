@@ -12,10 +12,6 @@ class NavidromeWrappedApp {
     document
       .getElementById("generateBtn")
       .addEventListener("click", () => this.generateWrapped());
-    // Demo button
-    document
-      .getElementById("demoBtn")
-      .addEventListener("click", () => this.generateDemoWrapped());
     // Navigation between views
     document
       .getElementById("viewWrappedBtn")

@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 260" role="img" aria-labelledby="title">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 892 260" role="img" aria-labelledby="title">
   <title id="title">wrapped45</title>
   <!-- media45 wordmark palette: light-gray text and blue 45 -->
   <text x="42" y="208" fill="#d4dbe5" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="165" letter-spacing="-8">wrapped</text>
   <path d="M27 112 C65 69 99 151 136 105 S196 13 227 75 S274 133 306 74 S357 78 397 79 C420 85 446 85 467 74"
         fill="none" stroke="#60a5fa" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"/>
-  <svg x="678" y="58" width="230" height="181" viewBox="740 82 320 212" aria-hidden="true">
+  <svg x="641" y="58" width="230" height="181" viewBox="740 82 320 212" aria-hidden="true">
     <path fill="#60a5fa" fill-rule="evenodd" d="M852,140 850,212 804,212ZM1030,102 929,101 914,202 943,206 951,199 966,194 976,194 988,199 992,203 998,212 1000,225 994,239 986,246 974,250 958,248 948,241 940,229 908,246 908,212 888,212 887,102 844,103 765,213 765,246 850,246 850,279 888,280 888,246 908,246 918,262 924,270 934,276 950,282 976,285 992,282 1005,278 1024,263 1036,242 1039,231 1040,212 1034,194 1020,174 1012,168 1000,163 988,160 972,161 953,168 954,154 958,135 1030,135Z"/>
   </svg>
 </svg>

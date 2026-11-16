@@ -215,9 +215,6 @@ small {
   transition: var(--transition);
   margin-top: var(--sp-sm);
 }
-#demoBtn {
-  width: 100%;
-}
 .secondary-btn:hover {
   background: var(--primary);
   color: #fff;
