@@ -1,1 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="wrapped45"><rect width="512" height="512" rx="116" fill="#171B30"/><path d="M76 312v-112M136 368V144M196 288v-64M256 396V116M316 320V192M376 356V156M436 292v-72" fill="none" stroke="#A5B4FC" stroke-width="25" stroke-linecap="round"/><text x="256" y="473" font-family="Arial,sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="#fff">45</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="740 58 320 320" role="img" aria-label="wrapped45">
+  <rect x="740" y="58" width="320" height="320" rx="72" fill="#19222c"/>
+  <g transform="translate(0 25)"><path fill="#60a5fa" fill-rule="evenodd" d="M852,140 850,212 804,212ZM1030,102 929,101 914,202 943,206 951,199 966,194 976,194 988,199 992,203 998,212 1000,225 994,239 986,246 974,250 958,248 948,241 940,229 908,246 908,212 888,212 887,102 844,103 765,213 765,246 850,246 850,279 888,280 888,246 908,246 918,262 924,270 934,276 950,282 976,285 992,282 1005,278 1024,263 1036,242 1039,231 1040,212 1034,194 1020,174 1012,168 1000,163 988,160 972,161 953,168 954,154 958,135 1030,135Z"/></g>
+</svg>

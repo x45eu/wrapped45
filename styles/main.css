@@ -815,3 +815,9 @@ small {
   border-width: 6px 6px 0 6px;
   border-color: #fff transparent transparent transparent;
 }
+
+/* wrapped45 logo on a light header for faithful dark-gray and blue brand colors */
+header { background: #fff; color: #303638; }
+header .subtitle { color: #536273; opacity: 1; }
+.brand-heading { margin: 0 auto var(--sp-sm); max-width: 40rem; }
+.brand-logo { display: block; width: 100%; max-width: 38rem; height: auto; margin: 0 auto; }
