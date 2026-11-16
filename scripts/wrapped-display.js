@@ -23,6 +23,13 @@ class WrappedDisplay {
   }
 
 
+  // Escape untrusted music metadata before interpolating into presentation markup.
+  static escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+  }
+
   // Sections have known presentation markup; never trust server-provided metadata as HTML.
   static safeMarkup(markup) {
     const template = document.createElement("template");
@@ -98,7 +105,7 @@ class WrappedDisplay {
         <h2 class="section-title">🎵 Your wrapped45</h2>
         <p class="section-subtitle">All-Time Listening Statistics</p>
         <div class="stat-card">
-          <div class="stat-number">${username}</div>
+          <div class="stat-number">${WrappedDisplay.escapeHTML(username)}</div>
           <div class="stat-label">Your Musical Journey</div>
         </div>
         ${
@@ -124,7 +131,7 @@ class WrappedDisplay {
                   <div class="stat-label">Total Duration</div>
                 </div>
               </div>
-              <p style="margin-top: 2rem; opacity: 0.8; margin-bottom:5rem">Generated on ${generatedAt}</p>`
+              <p style="margin-top: 2rem; opacity: 0.8; margin-bottom:5rem">Generated on ${WrappedDisplay.escapeHTML(generatedAt)}</p>`
         }
       </div>
     `;
@@ -221,14 +228,18 @@ class WrappedDisplay {
   getChartData(dataPath, countPath) {
     const rawData = this.safeAccess(this.stats, dataPath, []);
     if (!Array.isArray(rawData)) return [];
-    const total = rawData.reduce((sum, [, plays]) => sum + plays, 0) || 1;
+    const total = rawData.reduce((sum, [, plays]) => sum + (Number.isFinite(Number(plays)) ? Math.max(0, Number(plays)) : 0), 0) || 1;
 
-    return rawData.map(([label, plays]) => ({
-      label: label || "Unknown",
-      count: this.safeAccess(this.stats, `${countPath}.${label}`, 0),
-      plays: plays,
-      percent: ((plays / total) * 100).toFixed(1),
-    }));
+    return rawData.map(([label, plays]) => {
+      const safePlays = Number.isFinite(Number(plays)) ? Math.max(0, Number(plays)) : 0;
+      const count = Number(this.safeAccess(this.stats, `${countPath}.${label}`, 0));
+      return {
+        label: String(label || "Unknown"),
+        count: Number.isFinite(count) ? Math.max(0, count) : 0,
+        plays: safePlays,
+        percent: Math.max(0, Math.min(100, (safePlays / total) * 100)).toFixed(1),
+      };
+    });
   }
 
   createChart(type, data, colors) {
@@ -239,13 +250,13 @@ class WrappedDisplay {
       const color = colors[index % colors.length];
       bar += `<div class="chart-segment" 
                     style="background:${color}; width:${item.percent}%" 
-                    data-label="${item.label}" 
+                    data-label="${WrappedDisplay.escapeHTML(item.label)}" 
                     data-songs="${item.count}" 
                     data-plays="${item.plays.toLocaleString()}" 
                     data-pct="${item.percent}%"></div>`;
       key += `<div class="chart-key-item">
                     <span class="chart-key-color" style="background:${color}"></span>
-                    ${item.label}
+                    ${WrappedDisplay.escapeHTML(item.label)}
                   </div>`;
     });
 
@@ -339,15 +350,15 @@ class WrappedDisplay {
         playCount = item.plays || 0;
       }
 
-      const width = (playCount / maxPlays) * 100;
+      const width = Number.isFinite(Number(playCount)) ? Math.max(0, Math.min(100, (Number(playCount) / maxPlays) * 100)) : 0;
 
       if (isCompact) {
         return `
             <li class="top-item-compact">
               <div class="compact-rank">#${index + 1}</div>
               <div class="compact-info">
-                <div class="compact-name">${name}</div>
-                ${detail ? `<div class="compact-detail">${detail}</div>` : ""}
+                <div class="compact-name">${WrappedDisplay.escapeHTML(name)}</div>
+                ${detail ? `<div class="compact-detail">${WrappedDisplay.escapeHTML(detail)}</div>` : ""}
               </div>
               <div class="compact-plays">${playCount.toLocaleString()}</div>
             </li>
@@ -357,8 +368,8 @@ class WrappedDisplay {
             <li class="top-item">
               <div class="rank">#${index + 1}</div>
               <div class="item-info">
-                <div class="item-name">${name}</div>
-                ${detail ? `<div class="item-detail">${detail}</div>` : ""}
+                <div class="item-name">${WrappedDisplay.escapeHTML(name)}</div>
+                ${detail ? `<div class="item-detail">${WrappedDisplay.escapeHTML(detail)}</div>` : ""}
                 <div class="item-detail">${playCount.toLocaleString()} plays</div>
                 <div class="wrapped-progress-bar">
                   <div class="wrapped-progress-fill" style="width: ${width}%"></div>
@@ -583,9 +594,9 @@ class WrappedDisplay {
                 ${
                   neglectedTrack
                     ? `
-                  <div class="highlight-card" title="${neglectedTrack.title} by ${neglectedTrack.artist}, last played ${neglectedDays} days ago">
+                  <div class="highlight-card" title="${WrappedDisplay.escapeHTML(neglectedTrack.title)} by ${WrappedDisplay.escapeHTML(neglectedTrack.artist)}, last played ${Number.isFinite(neglectedDays) ? neglectedDays : 0} days ago">
                   <div class="highlight-icon">🕸️</div>
-                  <div class="highlight-value">${neglectedTrack.title}</div>
+                  <div class="highlight-value">${WrappedDisplay.escapeHTML(neglectedTrack.title)}</div>
                   <div class="highlight-label">Most Neglected Song</div>
                 </div>`
                     : "<p> ${neglectedTrack} </p>"

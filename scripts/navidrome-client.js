@@ -34,7 +34,36 @@ class ClientSideND {
       .slice(0, len);
   }
 
+  // Retry only temporary network/HTTP errors, never authentication or API errors.
   async _req(end, params = {}) {
+    for (let attempt = 0; ; attempt += 1) {
+      this.checkCancelled();
+      try {
+        return await this._requestOnce(end, params);
+      } catch (error) {
+        if (!error.retryable || attempt >= 2) throw error;
+        await this.waitBeforeRetry(Math.min(2000, 350 * (2 ** attempt)));
+      }
+    }
+  }
+
+  waitBeforeRetry(ms) {
+    this.checkCancelled();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.controller.signal.removeEventListener("abort", onAbort);
+        resolve();
+      }, ms);
+      const onAbort = () => {
+        clearTimeout(timer);
+        this.controller.signal.removeEventListener("abort", onAbort);
+        reject(new Error("Berechnung abgebrochen."));
+      };
+      this.controller.signal.addEventListener("abort", onAbort, { once: true });
+    });
+  }
+
+  async _requestOnce(end, params = {}) {
     this.checkCancelled();
     if (typeof this.pass !== "string" || typeof this.user !== "string") {
       throw new Error("Anmeldung nicht verfügbar. Bitte neu starten.");
@@ -67,7 +96,9 @@ class ClientSideND {
         throw new Error("Anmeldung fehlgeschlagen: Benutzername oder Passwort prüfen.");
       }
       if (!response.ok) {
-        throw new Error(`Navidrome antwortet mit HTTP ${response.status}. Bitte Server oder Proxy prüfen.`);
+        const error = new Error(`Navidrome antwortet mit HTTP ${response.status}. Bitte Server oder Proxy prüfen.`);
+        error.retryable = [408, 429, 500, 502, 503, 504].includes(response.status);
+        throw error;
       }
       const data = await response.json();
       const result = data["subsonic-response"];
@@ -79,9 +110,15 @@ class ClientSideND {
       throw new Error("Navidrome hat die Anfrage abgelehnt. Bitte Zugangsdaten und API prüfen.");
     } catch (error) {
       if (this.controller.signal.aborted) throw new Error("Berechnung abgebrochen.");
-      if (timeout.signal.aborted) throw new Error("Zeitüberschreitung: Navidrome antwortet nicht innerhalb von 30 Sekunden.");
+      if (timeout.signal.aborted) {
+        const timeoutError = new Error("Zeitüberschreitung: Navidrome antwortet nicht innerhalb von 30 Sekunden.");
+        timeoutError.retryable = true;
+        throw timeoutError;
+      }
       if (error instanceof TypeError) {
-        throw new Error("Keine Verbindung zu Navidrome. HTTPS, CORS und Server-Erreichbarkeit prüfen.");
+        const networkError = new Error("Keine Verbindung zu Navidrome. HTTPS, CORS und Server-Erreichbarkeit prüfen.");
+        networkError.retryable = true;
+        throw networkError;
       }
       throw error;
     } finally {
