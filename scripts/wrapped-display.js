@@ -611,8 +611,8 @@ class WrappedDisplay {
               </p>
 
               <div class="share-format">
-                <label for="shareFormat">Bildformat</label>
-                <select id="shareFormat" aria-label="Bildformat für Share-Card">
+                <label for="shareFormat">Image format</label>
+                <select id="shareFormat" aria-label="Choose share card format">
                   <option value="story">Story · 9:16</option>
                   <option value="portrait">Portrait · 4:5</option>
                   <option value="square">Quadrat · 1:1</option>

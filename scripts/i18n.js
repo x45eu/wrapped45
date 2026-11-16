@@ -3,6 +3,9 @@
   "use strict";
   const dict = {
     "Language":"Sprache",
+    "Install app":"App installieren",
+    "Cancel generation":"Berechnung abbrechen",
+    "Image format":"Bildformat",
     "Connect to your server to generate your all-time music statistics":"Verbinde dich mit deinem Server und erstelle deine persönliche Musikstatistik.",
     "Your All-Time wrapped45 is ready!":"Deine wrapped45-Statistik ist fertig!",
     "Click below to view your personalized wrapped experience.":"Unten kannst du dein persönliches Wrapped ansehen.",
@@ -118,6 +121,7 @@
     if (/^Generated on /.test(key)) return match[1] + key.replace(/^Generated on /, "Erstellt am ") + match[3];
     if (/^(\d+) plays$/.test(key)) return match[1] + key.replace(/ plays$/, " Wiedergaben") + match[3];
     if (/^by /.test(key)) return match[1] + key.replace(/^by /, "von ") + match[3];
+    if (/^Album \d+\/\d+$/.test(key)) return match[1] + key.replace(/^Album /, "Album ") + match[3];
     return original;
   }
   function translateDOM(root = document) {

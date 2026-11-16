@@ -36,3 +36,5 @@ Dieses Projekt ist eine unabhängige Weiterentwicklung von [mdeik/Navidrome-Wrap
 ## Mehrsprachigkeit und Offline-Betrieb
 
 Die Oberfläche bietet Deutsch und Englisch. Die Sprachauswahl wird lokal als einfache Präferenz gespeichert; Zugangsdaten und Musikstatistiken bleiben flüchtig. Die PWA speichert nur die statischen App-Dateien inklusive Schriftarten in einem getrennten Cache. Eine bereits geladene Startseite kann offline geöffnet werden, die Navidrome-Verbindung und neue Statistiken benötigen weiterhin Internet. Keine Navidrome-API-Antworten oder persönlichen Wrapped-Daten werden im Service-Worker-Cache gespeichert.
+
+Die Sprache der öffentlichen Bedienelemente lässt sich zwischen Deutsch und Englisch wechseln. Die ausführlichen, automatisch erzeugten Beschreibungstexte im Wrapped können teilweise weiterhin englische Formulierungen enthalten.
