@@ -1,10 +1,19 @@
 // Client-side Navidrome API client
 class ClientSideND {
   constructor(url, user, pass) {
-    this.root = url.replace(/\/$/, "");
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:" || parsed.username || parsed.password || parsed.search || parsed.hash) {
+      throw new Error("Use a clean HTTPS Navidrome URL without credentials, query or fragment.");
+    }
+    this.root = parsed.href.replace(/\/$/, "");
     this.user = user;
     this.pass = pass;
     this.base = `${this.root}/rest`;
+  }
+
+  clearCredentials() {
+    this.pass = null;
+    this.user = null;
   }
 
   _rand(len = 16) {
@@ -16,6 +25,7 @@ class ClientSideND {
   }
 
   async _req(end, params = {}) {
+    if (typeof this.pass !== "string" || typeof this.user !== "string") return null;
     const salt = this._rand();
     const token = md5(this.pass + salt);
 
@@ -24,29 +34,37 @@ class ClientSideND {
       t: token,
       s: salt,
       v: "1.16.1",
-      c: "wrapped",
+      c: "wrapped45",
       f: "json",
       ...params,
     });
 
     try {
-      const response = await fetch(`${this.base}/${end}?${queryParams}`, {
-        method: "GET",
+      // Navidrome accepts Subsonic parameters from POST form bodies.
+      // Keep username, salted token and parameters out of URLs and access logs.
+      const response = await fetch(`${this.base}/${end}`, {
+        method: "POST",
         headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
           Accept: "application/json",
         },
+        body: queryParams.toString(),
+        cache: "no-store",
+        credentials: "omit",
+        redirect: "error",
+        referrerPolicy: "no-referrer",
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        throw new Error(`Navidrome API responded with HTTP ${response.status}`);
       }
 
       const data = await response.json();
       return data["subsonic-response"]?.status === "ok"
         ? data["subsonic-response"]
         : null;
-    } catch (error) {
-      console.error("API request failed:", error);
+    } catch (_error) {
+      // Never log request URLs, tokens, usernames or error objects.
       return null;
     }
   }
@@ -458,7 +476,6 @@ class ClientSideND {
       numFavorites,
       generatedAt: new Date().toLocaleDateString(),
     };
-    console.log("Final stats object:", JSON.parse(JSON.stringify(result)));
     return result;
   }
 }

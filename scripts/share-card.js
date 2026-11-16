@@ -13,10 +13,7 @@ async function generateShareCard() {
   const ctx = canvas.getContext("2d");
   ctx.textBaseline = "top";
 
-  const loadFont = (url) =>
-    new FontFace("Inter", `url(${url})`)
-      .load()
-      .then((f) => document.fonts.add(f));
+  // Use the local system font: no third-party requests when sharing stats.
   const center = (txt) => (W - ctx.measureText(txt).width) / 2;
   const roundRect = (x, y, w, h, r) => {
     ctx.beginPath();
@@ -32,7 +29,6 @@ async function generateShareCard() {
     ctx.closePath();
   };
 
-  await loadFont("https://rsms.me/inter/font-files/Inter-Bold.woff2");
 
   const g = ctx.createLinearGradient(0, 0, 0, H);
   g.addColorStop(0, bgGrad[0]);
@@ -41,7 +37,7 @@ async function generateShareCard() {
   ctx.fillRect(0, 0, W, H);
 
   // gather stats
-  const s = window.navidromeApp?.stats || window.stats || cached || {};
+  const s = window.navidromeApp?.stats || {};
   const num = (n, def = 0) => (typeof n === "number" && !isNaN(n) ? n : def);
   const plays = num(s.albumBasedStats?.totalPlays);
   const days = Math.floor(num(s.listeningTime) / 86400);
@@ -65,7 +61,7 @@ async function generateShareCard() {
 
   /* ----------  title ---------- */
   ctx.fillStyle = "#fff";
-  ctx.font = 'bold 120px "Inter"';
+  ctx.font = 'bold 120px Arial, sans-serif';
   ctx.fillText(
     s.username || "My Wrapped",
     center(s.username || "My Wrapped"),
@@ -119,16 +115,16 @@ async function generateShareCard() {
     ctx.fill();
     ctx.restore();
 
-    ctx.font = '80px "Inter"';
+    ctx.font = '80px Arial, sans-serif';
     ctx.fillStyle = "#fff";
     ctx.fillText(c.icon, x + 40, y + 40);
 
     let fontSize = 64;
     const maxW = cardWidth - 80 - (c.plays != null ? 220 : 0);
-    ctx.font = `bold ${fontSize}px "Inter"`;
+    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
     while (ctx.measureText(c.name).width > maxW && fontSize > 36) {
       fontSize -= 2;
-      ctx.font = `bold ${fontSize}px "Inter"`;
+      ctx.font = `bold ${fontSize}px Arial, sans-serif`;
     }
     let [line1, line2] = breakLines(c.name, maxW, fontSize);
     const lineH = fontSize * 1.2;
@@ -136,7 +132,7 @@ async function generateShareCard() {
     if (line2) ctx.fillText(line2, x + 40, y + 140 + lineH);
 
     if (c.plays != null) {
-      ctx.font = '40px "Inter"';
+      ctx.font = '40px Arial, sans-serif';
       ctx.fillStyle = "rgba(255,255,255,.8)";
       ctx.fillText(
         `${c.plays.toLocaleString()} plays`,
@@ -145,14 +141,14 @@ async function generateShareCard() {
       );
     }
 
-    ctx.font = '36px "Inter"';
+    ctx.font = '36px Arial, sans-serif';
     ctx.fillStyle = "rgba(255,255,255,.6)";
     ctx.fillText(c.lbl, x + 40, y + CARD_H - 60);
   }
 
   /* ----------  line-break + ellipsis helper ---------- */
   function breakLines(str, maxW, fontSize) {
-    ctx.font = `bold ${fontSize}px "Inter"`;
+    ctx.font = `bold ${fontSize}px Arial, sans-serif`;
     if (ctx.measureText(str).width <= maxW) return [str, ""];
     const lastS = str.lastIndexOf(
       " ",

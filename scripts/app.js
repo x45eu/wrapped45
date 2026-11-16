@@ -65,14 +65,21 @@ class NavidromeWrappedApp {
       return false;
     }
 
-    if (!serverUrl.startsWith("http://") && !serverUrl.startsWith("https://")) {
-      this.showError(
-        "Invalid URL",
-        "Please include http:// or https:// in your server URL."
-      );
+    let url;
+    try {
+      url = new URL(serverUrl);
+    } catch {
+      this.showError("Invalid URL", "Enter a valid HTTPS Navidrome server URL.");
       return false;
     }
-
+    if (url.protocol !== "https:" || !url.hostname) {
+      this.showError("HTTPS required", "For your security, wrapped45 only connects to HTTPS Navidrome servers.");
+      return false;
+    }
+    if (url.username || url.password || url.search || url.hash) {
+      this.showError("Invalid URL", "Enter the server address without credentials, query parameters or a fragment.");
+      return false;
+    }
     return true;
   }
 
@@ -102,7 +109,7 @@ class NavidromeWrappedApp {
   async generateWrapped() {
     const serverUrl = document.getElementById("serverUrl").value.trim();
     const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+    const password = document.getElementById("password").value;
 
     if (!this.validateInputs(serverUrl, username, password)) {
       return;
@@ -111,8 +118,11 @@ class NavidromeWrappedApp {
     this.setLoadingState(true);
     this.hideSections();
 
+    let api;
     try {
-      const api = new ClientSideND(serverUrl, username, password);
+      api = new ClientSideND(serverUrl, username, password);
+      // The password is no longer kept in a form field while scanning.
+      document.getElementById("password").value = "";
 
       // Test connection
       this.updateProgress(5, "Testing connection...", "Pinging server");
@@ -132,6 +142,8 @@ class NavidromeWrappedApp {
     } catch (error) {
       this.showError("Generation Failed", error.message);
     } finally {
+      if (api) api.clearCredentials();
+      document.getElementById("password").value = "";
       this.setLoadingState(false);
     }
   }
@@ -139,14 +151,21 @@ class NavidromeWrappedApp {
   showResults() {
     const username = this.stats.username || "Unknown User";
     const isDemo = username === "Demo User";
-    document.getElementById("quickStats").innerHTML = `
-      <p>Generated for user: <strong>${username}</strong></p>
-    ${
-      isDemo
-        ? '<p style="color: var(--accent-color); font-style: italic;">🎭 Demo Mode - Using Sample Data</p>'
-        : ""
+    // Usernames are untrusted server data: render as text, never HTML.
+    const quickStats = document.getElementById("quickStats");
+    quickStats.replaceChildren();
+    const label = document.createElement("p");
+    label.append("Generated for user: ");
+    const name = document.createElement("strong");
+    name.textContent = username;
+    label.appendChild(name);
+    quickStats.appendChild(label);
+    if (isDemo) {
+      const demoNote = document.createElement("p");
+      demoNote.textContent = "🎭 Demo Mode - Using Sample Data";
+      demoNote.style.fontStyle = "italic";
+      quickStats.appendChild(demoNote);
     }
-    `;
 
     document.getElementById("resultsSection").style.display = "block";
     // The result is kept in memory only until the page is reloaded.
